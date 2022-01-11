@@ -1,1 +1,1 @@
-# laravel-simple-access-log
+# Laravel Simple Access Log
