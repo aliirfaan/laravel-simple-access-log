@@ -25,12 +25,11 @@ class CreateLsacAccessLogsTable extends Migration
             $table->string('ac_actor_group', 255)->nullable()->index('ac_actor_group_index')->comment('User role/group in application.');
             $table->string('ac_device_id', 255)->nullable()->index('ac_device_id_index')->comment('Device identifier.');
             $table->string('ac_event_name', 255)->index('ac_event_name_index')->comment('Common name for the event that can be used to filter down to similar events. Example: user.login.success, user.login.failure, user.logout');
+            $table->ipAddress('ac_ip_addr')->nullable()->index('ac_ip_addr_index');
             $table->string('ac_server', 255)->nullable()->index('ac_server_index')->comment('Server ids or names, server location. Example: uat, production, testing, 192.168.2.10');
             $table->string('ac_version', 255)->nullable()->index('ac_version_index')->comment('Version of the code/release that is sending the events.');
             $table->timestamps();
         });
-
-        DB::connection(config('simple-access-log.access_log_db_connection'))->statement('ALTER TABLE `lsac_access_logs` ADD `ac_ip_addr` VARBINARY(16)');
     }
 
     /**
@@ -40,8 +39,6 @@ class CreateLsacAccessLogsTable extends Migration
      */
     public function down()
     {
-        DB::connection(config('simple-access-log.access_log_db_connection'))->statement('ALTER TABLE `lsac_access_logs` DROP COLUMN `ac_ip_addr`');
-
         Schema::connection(config('simple-access-log.access_log_db_connection'))->dropIfExists('lsac_access_logs');
     }
 }
