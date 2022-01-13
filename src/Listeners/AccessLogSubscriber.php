@@ -36,7 +36,7 @@ class AccessLogSubscriber
         } catch (\Exception $e) {
             report($e);
     
-            $data['message'] = 'Access could be logged.';
+            $data['message'] = 'Access could not be logged.';
         }
     
         return $data;
