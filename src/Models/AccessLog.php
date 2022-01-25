@@ -20,7 +20,10 @@ class AccessLog extends Model
         'ac_event_name',
         'ac_server',
         'ac_version',
-        'ac_ip_addr'
+        'ac_ip_addr',
+        'ac_custom_field_1',
+        'ac_custom_field_2',
+        'ac_custom_field_3',
     ];
 
     public function __construct(array $attributes = [])

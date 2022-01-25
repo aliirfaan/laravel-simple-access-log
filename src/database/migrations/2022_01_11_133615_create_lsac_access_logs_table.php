@@ -28,6 +28,9 @@ class CreateLsacAccessLogsTable extends Migration
             $table->ipAddress('ac_ip_addr')->nullable()->index('ac_ip_addr_index');
             $table->string('ac_server', 255)->nullable()->index('ac_server_index')->comment('Server ids or names, server location. Example: uat, production, testing, 192.168.2.10');
             $table->string('ac_version', 255)->nullable()->index('ac_version_index')->comment('Version of the code/release that is sending the events.');
+            $table->text('ac_custom_field_1')->nullable();
+            $table->text('ac_custom_field_2')->nullable();
+            $table->text('ac_custom_field_3')->nullable();
             $table->timestamps();
         });
     }
