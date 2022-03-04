@@ -8,39 +8,28 @@ Many systems need to log user access for auditing purposes. This package creates
 * Configurable connection if using a different database for recording logs
 
 ## Table fields
-This is only a dump to explain fields. Table will be created via Laravel migration file.
+Migration schema to explain available fields.
 
-```sql
-CREATE TABLE `lsac_access_logs` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `ac_date_time_local` datetime NOT NULL COMMENT 'Timestamp in local timezone.',
-  `ac_date_time_utc` datetime DEFAULT NULL,
-  `ac_actor_id` bigint(20) unsigned NOT NULL COMMENT 'User id in application. Can be null in cases where an action is performed programmatically.',
-  `ac_actor_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Actor type in application. Useful if you are logging multiple types of users. Example: admin, user, guest',
-  `ac_actor_global_uid` bigint(20) unsigned DEFAULT NULL COMMENT 'User id if using a single sign on facility.',
-  `ac_actor_username` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Username in application.',
-  `ac_actor_group` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'User role/group in application.',
-  `ac_device_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Device identifier.',
-  `ac_event_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Common name for the event that can be used to filter down to similar events. Example: user.login.success, user.login.failure, user.logout',
-  `ac_ip_addr` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `ac_server` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Server ids or names, server location. Example: uat, production, testing, 192.168.2.10',
-  `ac_version` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Version of the code/release that is sending the events.',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `ac_date_time_local_index` (`ac_date_time_local`),
-  KEY `ac_date_time_utc_index` (`ac_date_time_utc`),
-  KEY `ac_actor_id_index` (`ac_actor_id`),
-  KEY `ac_actor_type_index` (`ac_actor_type`),
-  KEY `ac_actor_global_uid_index` (`ac_actor_global_uid`),
-  KEY `ac_actor_username_index` (`ac_actor_username`),
-  KEY `ac_actor_group_index` (`ac_actor_group`),
-  KEY `ac_device_id_index` (`ac_device_id`),
-  KEY `ac_event_name_index` (`ac_event_name`),
-  KEY `ac_ip_addr_index` (`ac_ip_addr`),
-  KEY `ac_server_index` (`ac_server`),
-  KEY `ac_version_index` (`ac_version`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+```php
+Schema::connection(config('simple-access-log.access_log_db_connection'))->create('lsac_access_logs', function (Blueprint $table) {
+	$table->dateTime('ac_date_time_local', $precision = 0)->index('ac_date_time_local_index')->comment('Timestamp in local timezone.');
+	$table->id();
+	$table->dateTime('ac_date_time_utc', $precision = 0)->nullable()->index('ac_date_time_utc_index');
+	$table->unsignedBigInteger('ac_actor_id')->index('ac_actor_id_index')->comment('User id in application. Can be null in cases where an action is performed programmatically.');
+	$table->string('ac_actor_type', 255)->nullable()->index('ac_actor_type_index')->comment('Actor type in application. Useful if you are logging multiple types of users. Example: admin, user, guest');
+	$table->unsignedBigInteger('ac_actor_global_uid')->nullable()->index('ac_actor_global_uid_index')->comment('User id if using a single sign on facility.');
+	$table->string('ac_actor_username', 255)->nullable()->index('ac_actor_username_index')->comment('Username in application.');
+	$table->string('ac_actor_group', 255)->nullable()->index('ac_actor_group_index')->comment('User role/group in application.');
+	$table->string('ac_device_id', 255)->nullable()->index('ac_device_id_index')->comment('Device identifier.');
+	$table->string('ac_event_name', 255)->index('ac_event_name_index')->comment('Common name for the event that can be used to filter down to similar events. Example: user.login.success, user.login.failure, user.logout');
+	$table->ipAddress('ac_ip_addr')->nullable()->index('ac_ip_addr_index');
+	$table->string('ac_server', 255)->nullable()->index('ac_server_index')->comment('Server ids or names, server location. Example: uat, production, testing, 192.168.2.10');
+	$table->string('ac_version', 255)->nullable()->index('ac_version_index')->comment('Version of the code/release that is sending the events.');
+	$table->text('ac_custom_field_1')->nullable();
+	$table->text('ac_custom_field_2')->nullable();
+	$table->text('ac_custom_field_3')->nullable();
+	$table->timestamps();
+});
 ```
 ## Events
 You can dispatch these events to record logs. You can also listen to these events if you want additional processing.
