@@ -8,7 +8,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use aliirfaan\LaravelSimpleAccessLog\Events\LoginSucceeded;
 use aliirfaan\LaravelSimpleAccessLog\Events\LoginFailed;
 use aliirfaan\LaravelSimpleAccessLog\Events\LoggedOut;
-use aliirfaan\LaravelSimpleAccessLog\Models\AccessLog;
 
 class AccessLogSubscriber
 {
