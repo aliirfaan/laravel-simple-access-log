@@ -135,9 +135,7 @@ class TestController extends Controller
 
 ### Custom model
 
-You have have additional requirements for our audit logs. In this case, you can add columns using migation and use a custom model to use your new columns.
-
-Add your custom model to the configuration file.
+If you have have additional requirements for our access logs, you can add columns using migation and use a custom model to use your new columns.
 
 ```php
 <?php
