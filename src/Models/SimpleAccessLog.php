@@ -3,8 +3,9 @@
 namespace aliirfaan\LaravelSimpleAccessLog\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use aliirfaan\LaravelSimpleAccessLog\Contracts\SimpleAccessLog as SimpleAccessLogContract;
 
-class AccessLog extends Model
+class SimpleAccessLog extends Model implements SimpleAccessLogContract
 {
     protected $table = 'lsac_access_logs';
 
@@ -20,10 +21,7 @@ class AccessLog extends Model
         'ac_event_name',
         'ac_server',
         'ac_version',
-        'ac_ip_addr',
-        'ac_custom_field_1',
-        'ac_custom_field_2',
-        'ac_custom_field_3',
+        'ac_ip_addr'
     ];
 
     public function __construct(array $attributes = [])

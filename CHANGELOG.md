@@ -3,6 +3,28 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com) and this project adheres to [Semantic Versioning](https://semver.org).
 
+## 3.0.0 - 2022-07-26
+
+### Added
+
+- SimpleAccessLog contract
+
+### Changed
+
+- renamed model to SimpleAccessLog
+
+### Deprecated
+
+- Nothing
+
+### Removed
+
+- custom fields as we can implement custom model
+
+### Fixed
+
+- Nothing
+
 ## 2.0.0 - 2022-07-26
 
 ### Added

@@ -6,6 +6,7 @@ Many systems need to log user access for auditing purposes. This package creates
 * Table structure to keep access logs
 * Events for common access operations like login success, login failure, logout
 * Configurable connection if using a different database for recording logs
+* Use custom model
 
 ## Table fields
 Migration schema to explain available fields.
@@ -25,9 +26,6 @@ Schema::connection(config('simple-access-log.access_log_db_connection'))->create
     $table->ipAddress('ac_ip_addr')->nullable()->index('ac_ip_addr_index');
     $table->string('ac_server', 255)->nullable()->index('ac_server_index')->comment('Server ids or names, server location. Example: uat, production, testing, 192.168.2.10');
     $table->string('ac_version', 255)->nullable()->index('ac_version_index')->comment('Version of the code/release that is sending the events.');
-    $table->text('al_custom_field_1')->nullable()->index('al_custom_field_1_index');
-    $table->text('al_custom_field_2')->nullable()->index('al_custom_field_2_index');
-    $table->text('al_custom_field_3')->nullable()->index('al_custom_field_3_index');
     $table->timestamps();
 });
 ```
@@ -87,7 +85,12 @@ The database connection to use. Defaults to environment variable 'DB_CONNECTION'
 ```php
 'access_log_db_connection' => env('ACCESS_LOG_DB_CONNECTION', env('DB_CONNECTION'))
 ```
+access_log_model | String
+The model you want to use. The model must implement aliirfaan\LaravelSimpleAccessLog\Contracts\SimpleAccessLog
 
+```php
+'access_log_model' => aliirfaan\LaravelSimpleAccessLog\Models\SimpleAccessLog::class,
+```
 ## Usage
 
 ```php
@@ -128,6 +131,39 @@ class TestController extends Controller
         }
     }
 }
+```
+
+### Custom model
+
+You have have additional requirements for our audit logs. In this case, you can add columns using migation and use a custom model to use your new columns.
+
+Add your custom model to the configuration file.
+
+```php
+<?php
+
+namespace App\Models\AccessLog;
+
+use Illuminate\Database\Eloquent\Model;
+use aliirfaan\LaravelSimpleAccessLog\Contracts\SimpleAccessLog as SimpleAccessLogContract;
+use aliirfaan\LaravelSimpleAccessLog\Models\SimpleAccessLog;
+
+// custom class that extends base model and implements contract
+class AccessLog extends SimpleAccessLog implements SimpleAccessLogContract
+{
+    public function __construct(array $attributes = [])
+    {
+        // add your additional columns to the fillable property
+        $this->mergeFillable(['al_custom_field_1']);
+        
+        parent::__construct($attributes);
+    }
+}
+```
+
+Specify custom model to configuration file
+```php
+'access_log_model' => App\Models\AccessLog\AccessLog::class,
 ```
 
 ## License

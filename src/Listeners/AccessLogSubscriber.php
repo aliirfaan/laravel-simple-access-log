@@ -12,6 +12,8 @@ use aliirfaan\LaravelSimpleAccessLog\Models\AccessLog;
 
 class AccessLogSubscriber
 {
+    private $model;
+
     /**
      * Create the event listener.
      *
@@ -19,7 +21,7 @@ class AccessLogSubscriber
      */
     public function __construct()
     {
-        //
+        $this->model = app(config('simple-access-log.access_log_model'));
     }
 
     public function handleAccessLogEvent($event)
@@ -32,7 +34,7 @@ class AccessLogSubscriber
 
         try {
             $eventData = $event->eventData;
-            $insertLog = AccessLog::create($eventData);
+            $insertLog = $this->model::create($eventData);
         } catch (\Exception $e) {
             report($e);
     
