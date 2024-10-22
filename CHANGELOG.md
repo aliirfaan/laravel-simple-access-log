@@ -3,6 +3,31 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com) and this project adheres to [Semantic Versioning](https://semver.org).
 
+## 5.0.0 - 2024-10-22
+
+### Added
+
+- prunable configuration
+- use MassPrunable in model
+
+### Changed
+
+- rename column ac_date_time_local in migrtion to ac_date_time
+- make column ac_event_name nullable
+- model
+
+### Deprecated
+
+- Nothing
+
+### Removed
+
+- column ac_date_time_utc in migrtion
+
+### Fixed
+
+- column prefix from al_ to ac_ for some columns
+
 ## 4.0.1 - 2023-01-18
 
 ### Added

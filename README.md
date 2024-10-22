@@ -14,20 +14,19 @@ Migration schema to explain available fields.
 ```php
 Schema::connection(config('simple-access-log.access_log_db_connection'))->create('lsac_access_logs', function (Blueprint $table) {
     $table->id();
-    $table->dateTime('ac_date_time_local', $precision = 0)->index('ac_date_time_local_index')->comment('Timestamp in local timezone.');
-    $table->dateTime('ac_date_time_utc', $precision = 0)->nullable()->index('ac_date_time_utc_index');
-    $table->string('al_actor_id')->nullable()->index('al_actor_id_index')->comment('User id in application. Can be null in cases where an action is performed programmatically.');
+    $table->dateTime('ac_date_time', $precision = 0)->index('ac_date_time_index');
+    $table->string('ac_actor_id')->nullable()->index('ac_actor_id_index')->comment('User id in application. Can be null in cases where an action is performed programmatically.');
     $table->string('ac_actor_type', 255)->nullable()->index('ac_actor_type_index')->comment('Actor type in application. Useful if you are logging multiple types of users. Example: admin, user, guest');
-    $table->string('al_actor_global_uid')->nullable()->index('al_actor_global_uid_index')->comment('User id if using a single sign on facility.');
+    $table->string('ac_actor_globac_uid')->nullable()->index('ac_actor_globac_uid_index')->comment('User id if using a single sign on facility.');
     $table->string('ac_actor_username', 255)->nullable()->index('ac_actor_username_index')->comment('Username in application.');
     $table->string('ac_actor_group', 255)->nullable()->index('ac_actor_group_index')->comment('User role/group in application.');
     $table->string('ac_device_id', 255)->nullable()->index('ac_device_id_index')->comment('Device identifier.');
-    $table->string('ac_event_name', 255)->index('ac_event_name_index')->comment('Common name for the event that can be used to filter down to similar events. Example: user.login.success, user.login.failure, user.logout');
+    $table->string('ac_event_name', 255)->nullable()->index('ac_event_name_index')->comment('Common name for the event that can be used to filter down to similar events. Example: user.login.success, user.login.failure, user.logout');
     $table->ipAddress('ac_ip_addr')->nullable()->index('ac_ip_addr_index');
     $table->string('ac_server', 255)->nullable()->index('ac_server_index')->comment('Server ids or names, server location. Example: uat, production, testing, 192.168.2.10');
     $table->string('ac_version', 255)->nullable()->index('ac_version_index')->comment('Version of the code/release that is sending the events.');
     $table->timestamps();
-});
+ });
 ```
 ## Events
 You can dispatch these events to record logs. You can also listen to these events if you want additional processing.
@@ -91,6 +90,19 @@ The model you want to use. The model must implement aliirfaan\LaravelSimpleAcces
 ```php
 'access_log_model' => aliirfaan\LaravelSimpleAccessLog\Models\SimpleAccessLog::class,
 ```
+should_prune | Boolean
+Whether to prune records
+
+```php
+'should_prune' => env('ACCESS_LOG_SHOULD_PRUNE', false),
+```
+
+prune_days | Numeric
+to delete records older than prune_days
+
+```php
+'prune_days' => env('ACCESS_LOG_PRUNE_DAYS', 30),
+```
 ## Usage
 
 ```php
@@ -109,8 +121,7 @@ class TestController extends Controller
 
             // log access after operation
             $eventData = [
-                'ac_date_time_local' => date('Y-m-d H:i:s'),
-                'ac_date_time_utc' => date('Y-m-d H:i:s'),
+                'ac_date_time' => date('Y-m-d H:i:s'),
                 'ac_actor_id' => 5,
                 'ac_actor_type' => 'Model/Customer',
                 'ac_actor_global_uid'=> 5,
